@@ -5,6 +5,7 @@ export const MIGRATION_PATHS = [
   { id: "cjs-esm", from: "CommonJS", to: "ES Modules", icon: "ES", color: "#f0db4f" },
   { id: "flask-fastapi", from: "Flask", to: "FastAPI", icon: "⚡", color: "#009688" },
   { id: "java8-java17", from: "Java 8", to: "Java 17", icon: "JV", color: "#e76f00" },
+  { id: "xml-compose", from: "Android XML", to: "Jetpack Compose", icon: "CM", color: "#3ddc84" },
 ];
 
 export const SAMPLES = {
@@ -230,6 +231,64 @@ public class DataService {
         return Optional.empty();
     }
 }`,
+  "xml-compose": `<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/avatarImage"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:contentDescription="@string/avatar_description"
+        android:src="@drawable/ic_placeholder_avatar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/nameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="@string/placeholder_name"
+        app:layout_constraintTop_toTopOf="@id/avatarImage"
+        app:layout_constraintStart_toEndOf="@id/avatarImage" />
+
+    <TextView
+        android:id="@+id/emailText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textSize="14sp"
+        android:textColor="#666666"
+        android:text="@string/placeholder_email"
+        app:layout_constraintTop_toBottomOf="@id/nameText"
+        app:layout_constraintStart_toStartOf="@id/nameText" />
+
+    <ProgressBar
+        android:id="@+id/loadingSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/editButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/edit_profile"
+        app:layout_constraintTop_toBottomOf="@id/avatarImage"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>`,
 };
 
 export const PROMPTS = {
@@ -251,6 +310,9 @@ Output ONLY the migrated code. No explanations, no markdown fences, no backticks
   "java8-java17": `You are CodeShift, an expert code migration engine. Modernize Java 8 to Java 17+.
 Rules: Use records, pattern matching, text blocks, var, Stream improvements, switch expressions where appropriate. Preserve all logic.
 Output ONLY the migrated code. No explanations, no markdown fences, no backticks.`,
+  "xml-compose": `You are CodeShift, an expert code migration engine. Convert Android XML layouts to Jetpack Compose (Kotlin).
+Rules: Emit a single @Composable function named after the layout's purpose. Map views to Material3 composables: TextView→Text, ImageView→Image/Icon, Button→Button, EditText→OutlinedTextField, RecyclerView/ListView→LazyColumn or LazyRow, ProgressBar→CircularProgressIndicator, ConstraintLayout→ConstraintLayout (compose) or Column/Row when the structure is simple, ScrollView→Column with verticalScroll. Convert layout_width/height and margins/padding to Modifier chains (fillMaxWidth, fillMaxHeight, size, padding, wrapContentSize). Convert android:visibility="gone" to conditional composition (if/when) instead of a visibility modifier. Drop view IDs and findViewById/ViewBinding patterns; hoist state with remember/mutableStateOf and expose interaction via lambda parameters (onClick, onValueChange, etc.) instead of listeners. Convert drawables to painterResource(), strings/dimens to string/dimension resources via stringResource()/dimensionResource(). Preserve accessibility via contentDescription and Modifier.semantics. Preserve all structure and logic implied by the layout.
+Output ONLY the migrated Kotlin code. No explanations, no markdown fences, no backticks.`,
 };
 
 export function getPath(id) {

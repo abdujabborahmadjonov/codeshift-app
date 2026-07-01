@@ -46,7 +46,7 @@ export function GitHubModal({ onClose, onImport }) {
       } else {
         const r = await fetchFile(parsed.owner, parsed.repo, parsed.branch, parsed.path);
         if (r.type === "dir") {
-          const codeFiles = r.files.filter((f) => f.type === "file" && /\.(js|jsx|ts|tsx|py|java|mjs|cjs)$/i.test(f.name));
+          const codeFiles = r.files.filter((f) => f.type === "file" && /\.(js|jsx|ts|tsx|py|java|mjs|cjs|xml)$/i.test(f.name));
           if (codeFiles.length === 0) throw new Error("No supported code files found in this directory");
           setRepoFiles({ files: codeFiles, owner: parsed.owner, repo: parsed.repo, branch: parsed.branch });
         }

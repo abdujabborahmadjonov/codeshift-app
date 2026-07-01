@@ -38,6 +38,7 @@ export const FILE_EXTENSIONS = {
   "cjs-esm": ".mjs",
   "flask-fastapi": ".py",
   "java8-java17": ".java",
+  "xml-compose": ".kt",
 };
 
 export function getOutputFilename(pathId, importedName) {
