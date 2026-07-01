@@ -164,11 +164,13 @@ export function MigrationApp({ onBack, initialPath = "js-ts" }) {
         [
           {
             role: "system",
-            content: `Analyze this code migration. Return ONLY valid JSON, no markdown: {"changes":[{"type":"added|modified|removed","description":"..."}],"warnings":["..."],"confidence":0-100}. Max 6 changes.`,
+            content: `Analyze this code migration. Return ONLY valid JSON, no markdown: {"changes":[{"type":"added|modified|removed","description":"..."}],"warnings":["..."],"confidence":0-100,"behaviorChecks":[{"aspect":"...","status":"preserved|changed|uncertain","detail":"..."}]}. Max 6 changes.
+
+For behaviorChecks: identify up to 5 concrete business-logic elements in the source — edge cases, error handling, boundary conditions, validation rules, calculations — and state whether each is preserved, changed, or uncertain in the migrated code. This is a static AI read of the two snippets, not executed verification, so mark anything you can't confirm by reading the code as "uncertain" rather than guessing "preserved".`,
           },
           { role: "user", content: `From:\n${source.slice(0, 2000)}\n\nTo:\n${code.slice(0, 2000)}` },
         ],
-        { max_tokens: 800, signal: controller.signal }
+        { max_tokens: 1000, signal: controller.signal }
       );
 
       const parsed = JSON.parse(stripCodeFences(analysisRaw));
@@ -413,6 +415,22 @@ export function MigrationApp({ onBack, initialPath = "js-ts" }) {
                   <span className="change-desc">{c.description}</span>
                 </div>
               ))}
+
+              {analysis.behaviorChecks?.length > 0 && (
+                <>
+                  <div className="section-label" style={{ marginTop: 14 }}>
+                    BEHAVIOR PRESERVATION <span style={{ fontWeight: 400, color: "var(--text-faint)" }}>— AI-reviewed, not executed</span>
+                  </div>
+                  {analysis.behaviorChecks.map((b, i) => (
+                    <div key={i} className="change-item">
+                      <span className={`change-tag change-tag-${b.status === "preserved" ? "add" : b.status === "changed" ? "del" : "mod"}`}>
+                        {b.status === "preserved" ? "OK" : b.status === "changed" ? "DIFF" : "?"}
+                      </span>
+                      <span className="change-desc"><strong style={{ color: "var(--text-secondary)" }}>{b.aspect}:</strong> {b.detail}</span>
+                    </div>
+                  ))}
+                </>
+              )}
 
               {analysis.warnings?.length > 0 && (
                 <>
